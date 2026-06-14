@@ -5,15 +5,12 @@
  */
 function applyCustomSort() {
   [].__proto__.sort2 = function (compareFunction) {
-
+    // Если this не массив или пустой/один элемент, возвращаем как есть
     if (!Array.isArray(this) || this.length <= 1) {
       return this;
     }
 
-
-    const arr = [...this];
-
-
+    // Стандартная функция сравнения, если не предоставлена
     const defaultCompare = (a, b) => {
       const strA = String(a);
       const strB = String(b);
@@ -32,8 +29,8 @@ function applyCustomSort() {
     const compare =
       typeof compareFunction === 'function' ? compareFunction : defaultCompare;
 
-
-    function quickSort(array, left = 0, right = array.length - 1) {
+    // Быстрая сортировка, работающая напрямую с исходным массивом
+    function quickSort(array, left, right) {
       if (left >= right) {
         return;
       }
@@ -51,6 +48,7 @@ function applyCustomSort() {
       for (let j = left; j < right; j++) {
         if (compare(array[j], pivot) <= 0) {
           i++;
+
           [array[i], array[j]] = [array[j], array[i]];
         }
       }
@@ -60,12 +58,7 @@ function applyCustomSort() {
       return i + 1;
     }
 
-
-    quickSort(arr);
-
-    for (let i = 0; i < this.length; i++) {
-      this[i] = arr[i];
-    }
+    quickSort(this, 0, this.length - 1);
 
     return this;
   };
